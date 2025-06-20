@@ -1,0 +1,24 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Seedwork/.vs
+/Seedwork/Seedwork/obj
+/Seedwork/Seedwork.Console/bin/Debug/net8.0
+/Seedwork/Seedwork.Console/obj
+/Seedwork/Seedwork.IOC.Autofac/bin/Debug/netstandard2.0
+/Seedwork/Seedwork.IOC.Autofac/obj
+/Seedwork/Seedwork.IOC.Autofac.Tests/bin/Debug/net8.0
+/Seedwork/Seedwork.IOC.Autofac.Tests/obj
+/Seedwork/Seedwork.IOC.Ninject/bin/Debug/netstandard2.0
+/Seedwork/Seedwork.IOC.Ninject/obj
+/Seedwork/Seedwork.IOC.Ninject.Tests/bin/Debug/net8.0
+/Seedwork/Seedwork.IOC.Ninject.Tests/obj
+/Seedwork/Seedwork.Repositories.Aerospike/bin/Debug/netstandard2.0
+/Seedwork/Seedwork.Repositories.Aerospike/obj
+/Seedwork/Seedwork.Repositories.Ibm.Db2/obj
+/Seedwork/Seedwork.Respositories.PostgreSQL/obj
+/Seedwork/Seedwork.Tests/bin/Debug/net8.0
+/Seedwork/Seedwork.Tests/obj
+/Seedwork/Seedwork/bin/Debug/netstandard2.0
