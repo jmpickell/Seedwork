@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Seedwork.IOC.Interfaces;
+using System.Linq;
 
 namespace Seedwork.IOC.Autofac
 {
@@ -13,10 +14,10 @@ namespace Seedwork.IOC.Autofac
         public void Dispose() =>
             _scope.Dispose();
 
-        public T Resolve<T>() =>
-            _scope.Resolve<T>();
+        public T Resolve<T>(params IocParameter[] parameters) =>
+            _scope.Resolve<T>(parameters.Select(x => x.Convert()).ToArray());
 
-        public T Resolve<T>(string name) =>
-            _scope.ResolveNamed<T>(name);
+        public T Resolve<T>(string name, params IocParameter[] parameters) =>
+            _scope.ResolveNamed<T>(name, parameters.Select(x => x.Convert()).ToArray());
     }
 }

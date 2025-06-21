@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Seedwork.Repositories.Interfaces;
 using System;
@@ -8,6 +7,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
+using Dapper;
+using System.Text.RegularExpressions;
 
 namespace Seedwork.Repositories.SQL
 {
@@ -31,12 +32,7 @@ namespace Seedwork.Repositories.SQL
             using (var connection = _connectionFactory())
             using (var command = connection.CreateCommand())
             {
-                var sb = new StringBuilder();
-                sb.Append("INSERT INTO @table ");
-                sb.Append("(PrimaryKey," + columns.Select(x => x.Key).AsSql() + ") ");
-                sb.Append("VALUES (@key," + columns.Select(x => $"@{x.Key}").AsSql() + ")");
-                command.CommandText = sb.ToString();
-
+                command.CommandText = $"INSERT INTO @table (PrimaryKey, @PrimaryKey) VALUES (@key, {columns.Select(x => $"@{x.Key}").AsSql()})"; // UNSAFE
                 command.AddParameter("@table", query.Namespace + "." + query.Table);
                 command.AddParameter("@key", query.Key);
                 foreach (var column in columns)
@@ -71,24 +67,31 @@ namespace Seedwork.Repositories.SQL
 
         public Row Read<TPrimary>(Query<TPrimary> query, params string[] columns)
         {
+            var row = new Row(new Dictionary<string, object>());
+
+            if (!query.IsValidSql() || !columns.IsValidSql())
+                return row;
+
             using (var connection = _connectionFactory())
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT @columns FROM @table WHERE PrimaryKey = @key";
-                command.AddParameter("@columns", columns.AsSql());
-                command.AddParameter("@table", query.Namespace + "." + query.Table);
+                var table  = query.Namespace == null ? query.Table : query.Namespace + "." + query.Table;
+                var column = query.Column ?? GetPrimaryKeyColumn();
+
+                command.CommandText = $"SELECT {columns.AsSql()} FROM {table} WHERE {column} = @key";
                 command.AddParameter("@key", query.Key);
 
                 //Execute Query
                 connection.Open();
                 using (IDataReader reader = command.ExecuteReader())
                     if (reader.Read())
-                        return new Row(reader.ToDictionary());
+                        row = new Row(reader.ToDictionary());
                 connection.Close();
             }
-            return new Row(new Dictionary<string, object>());
+            return row;
         }
 
+        // TODO make work
         public IEnumerable<Row> Read(Query<Filter> query, params string[] columns)
         {
             using (var connection = _connectionFactory()) 
@@ -123,12 +126,7 @@ namespace Seedwork.Repositories.SQL
             using (var connection = _connectionFactory())
             using (var command = connection.CreateCommand())
             {
-                var sb = new StringBuilder();
-                sb.Append("UPDATE @table SET ");
-                sb.Append(row.GetAll().Select(c => $"{c.Key} = @{c.Key}").AsSql());
-                sb.Append(" WHERE PrimaryKey = @key");
-                command.CommandText = sb.ToString();
-
+                command.CommandText = $"UPDATE @table SET {row.GetAll().Select(c => $"{c.Key} = @{c.Key}").AsSql()} WHERE PrimaryKey = @key"; //UNSAFE
                 command.AddParameter("@table", query.Namespace + "." + query.Table);
                 command.AddParameter("@key", query.Key);
                 foreach (var column in row.GetAll())
@@ -144,6 +142,11 @@ namespace Seedwork.Repositories.SQL
         }
 
         public bool Update(Query<Filter> query, Row row)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string GetPrimaryKeyColumn() 
         {
             throw new NotImplementedException();
         }
@@ -181,5 +184,16 @@ namespace Seedwork.Repositories.SQL
 
         public static string AsSql(this IEnumerable<string> columns) =>
             columns.Any() ? string.Join(",", columns) : "*";
-    }
+
+        public static bool IsValidSql<T>(this Query<T> query)
+        {
+            return query.Namespace.IsValidSql() && query.Table.IsValidSql() && query.Column.IsValidSql();
+        }
+
+        public static bool IsValidSql(this IEnumerable<string> strings) =>
+            strings.All(s => s.IsValidSql());
+
+        public static bool IsValidSql(this string str) =>
+            Regex.IsMatch(str, "^[a-zA-Z0-9_]+$");
+    } 
 }

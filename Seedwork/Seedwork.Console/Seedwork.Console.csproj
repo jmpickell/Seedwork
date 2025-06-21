@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Seedwork.IOC.Autofac\Seedwork.IOC.Autofac.csproj" />
     <ProjectReference Include="..\Seedwork.IOC.Ninject\Seedwork.IOC.Ninject.csproj" />
     <ProjectReference Include="..\Seedwork\Seedwork.csproj" />

@@ -1,0 +1,8 @@
+fix SQL stuff
+	Update
+	Delete
+	Create
+Unit Test
+Do work for filters
+	SQL
+	Aerospike

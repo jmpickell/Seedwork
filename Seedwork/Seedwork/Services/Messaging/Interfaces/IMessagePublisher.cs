@@ -13,7 +13,7 @@ namespace Seedwork.Services.Messaging.Interfaces
     public class Message<T>
     {
         public Headers Headers { get; }
-        public T Playload { get; }
+        public T Payload { get; }
     }
 
     public class Headers
