@@ -25,40 +25,22 @@ namespace Seedwork.Repositories.SQL
 
         public bool Create<TPrimary>(Query<TPrimary> query, Row row)
         {
-            if (!row.GetAll().Any())
+            if (!row.GetAll().Any() || !query.IsValidSql() || !row.GetColumnNames().IsValidSql())
                 return false;
-            var columns = row.GetAll().ToArray();
 
             using (var connection = _connectionFactory())
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = $"INSERT INTO @table (PrimaryKey, @PrimaryKey) VALUES (@key, {columns.Select(x => $"@{x.Key}").AsSql()})"; // UNSAFE
-                command.AddParameter("@table", query.Namespace + "." + query.Table);
+                var pkColumn = query.Column ?? GetPrimaryKeyColumn();
+
+                command.CommandText = $"INSERT INTO {query.BuildTableName()} ({pkColumn}, {row.GetColumnNames().AsSql()}) VALUES (@key, {row.GetColumnNames().AsSql(prefix: "@")})";
                 command.AddParameter("@key", query.Key);
-                foreach (var column in columns)
+                foreach (var column in row.GetAll())
                     command.AddParameter($"@{column.Key}", column.Value);
 
                 connection.Open();
                 var updated = command.ExecuteNonQuery();
                 _logger.LogInformation($"{updated} Rows Created"); //TODO change
-                connection.Close();
-
-                return updated > 0;
-            }
-        }
-
-        public bool Delete<TPrimary>(Query<TPrimary> query)
-        {
-            using (var connection = _connectionFactory())
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "DELETE FROM @table WHERE PrimaryKey = @key";
-                command.AddParameter("@table", query.Namespace + "." + query.Table);
-                command.AddParameter("@key", query.Key);
-
-                connection.Open();
-                var updated = command.ExecuteNonQuery();
-                _logger.LogInformation($"{updated} Rows Deleted"); //TODO change
                 connection.Close();
 
                 return updated > 0;
@@ -75,10 +57,9 @@ namespace Seedwork.Repositories.SQL
             using (var connection = _connectionFactory())
             using (var command = connection.CreateCommand())
             {
-                var table  = query.Namespace == null ? query.Table : query.Namespace + "." + query.Table;
                 var column = query.Column ?? GetPrimaryKeyColumn();
 
-                command.CommandText = $"SELECT {columns.AsSql()} FROM {table} WHERE {column} = @key";
+                command.CommandText = $"SELECT {columns.AsSql()} FROM {query.BuildTableName()} WHERE {column} = @key";
                 command.AddParameter("@key", query.Key);
 
                 //Execute Query
@@ -89,6 +70,50 @@ namespace Seedwork.Repositories.SQL
                 connection.Close();
             }
             return row;
+        }
+
+        public bool Update<TPrimary>(Query<TPrimary> query, Row row)
+        {
+            if (!row.GetAll().Any() || !query.IsValidSql() || !row.GetColumnNames().IsValidSql())
+                return false;
+
+            using (var connection = _connectionFactory())
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = $"UPDATE {query.BuildTableName()} SET {row.GetColumnNames().Select(c => $"{c} = @{c}").AsSql()} WHERE {query.Column} = @key"; //UNSAFE
+                command.AddParameter("@key", query.Key);
+                foreach (var column in row.GetAll())
+                    command.AddParameter($"@{column.Key}", column.Value);
+
+                connection.Open();
+                var updated = command.ExecuteNonQuery();
+                _logger.LogInformation($"{updated} Rows Updated"); //TODO change
+                connection.Close();
+
+                return updated > 0;
+            }
+        }
+
+        public bool Delete<TPrimary>(Query<TPrimary> query)
+        {
+            if (!query.IsValidSql())
+                return false;
+
+            using (var connection = _connectionFactory())
+            using (var command = connection.CreateCommand())
+            {
+                var column = query.Column ?? GetPrimaryKeyColumn();
+
+                command.CommandText = $"DELETE FROM {query.BuildTableName()} WHERE {column} = @key";
+                command.AddParameter("@key", query.Key);
+
+                connection.Open();
+                var updated = command.ExecuteNonQuery();
+                _logger.LogInformation($"{updated} Rows Deleted");
+                connection.Close();
+
+                return updated > 0;
+            }
         }
 
         // TODO make work
@@ -115,29 +140,6 @@ namespace Seedwork.Repositories.SQL
                 while (reader.Read())
                     yield return new Row(reader.ToDictionary());
                 connection.Close();
-            }
-        }
-
-        public bool Update<TPrimary>(Query<TPrimary> query, Row row)
-        {
-            if (!row.GetAll().Any()) 
-                return false;
-
-            using (var connection = _connectionFactory())
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = $"UPDATE @table SET {row.GetAll().Select(c => $"{c.Key} = @{c.Key}").AsSql()} WHERE PrimaryKey = @key"; //UNSAFE
-                command.AddParameter("@table", query.Namespace + "." + query.Table);
-                command.AddParameter("@key", query.Key);
-                foreach (var column in row.GetAll())
-                    command.AddParameter($"@{column.Key}", column.Value);
-
-                connection.Open();
-                var updated = command.ExecuteNonQuery();
-                _logger.LogInformation($"{updated} Rows Updated"); //TODO change
-                connection.Close();
-
-                return updated > 0;
             }
         }
 
@@ -182,18 +184,25 @@ namespace Seedwork.Repositories.SQL
             return dictionary;
         }
 
-        public static string AsSql(this IEnumerable<string> columns) =>
-            columns.Any() ? string.Join(",", columns) : "*";
+        public static string AsSql(this IEnumerable<string> columns, string prefix = "", string suffix = "") =>
+            columns.Any() ? string.Join(",", columns.Select(x => $"{prefix}{x}{suffix}")) : "*";
 
-        public static bool IsValidSql<T>(this Query<T> query)
-        {
-            return query.Namespace.IsValidSql() && query.Table.IsValidSql() && query.Column.IsValidSql();
-        }
+        public static bool IsValidSql<T>(this Query<T> query) => 
+            (query.Namespace.IsNullOrEmpty() || query.Namespace.IsValidSql()) && query.Table.IsValidSql() && query.Column.IsValidSql();
 
         public static bool IsValidSql(this IEnumerable<string> strings) =>
             strings.All(s => s.IsValidSql());
 
         public static bool IsValidSql(this string str) =>
             Regex.IsMatch(str, "^[a-zA-Z0-9_]+$");
+
+        public static string BuildTableName<T>(this Query<T> query) =>
+            string.IsNullOrEmpty(query.Namespace) ? query.Table : query.Namespace + "." + query.Table;
+
+        public static IEnumerable<string> GetColumnNames(this Row row, string with = "") =>
+            row.GetAll().Keys;
+
+        public static bool IsNullOrEmpty(this string str) =>
+            string.IsNullOrEmpty(str);
     } 
 }

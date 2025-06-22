@@ -16,9 +16,22 @@ namespace Seedwork.Console.Sandboxes
         {
             var repository = scope.Resolve<IRepository>(db);
 
-            var query = new Query<string> { Key = "USA", Column = "code", Table = "country" };
+            var query = new Query<string> { Key = "SQP", Column = "code", Table = "country" };
 
-            var row = repository.Read(query, "IndepYear");
+            var columns = new Dictionary<string, object> 
+            {
+                { "IndepYear", -753 }
+            };
+            var row = new Row(columns);
+            
+            var result = repository.Create(query, row);
+            columns["Continent"] = "Europe";
+
+            result = repository.Update(query, row);
+
+            var result2 = repository.Read(query, "Continent");
+
+            result = repository.Delete(query);
 
             return Task.CompletedTask;
         }

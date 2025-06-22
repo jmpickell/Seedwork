@@ -24,10 +24,10 @@ namespace Seedwork.Console.Sandboxes
             IIocContainer container = new NinjectContainer();
 
             container.AsSingleton().BindGeneric(typeof(NullLogger<>), typeof(ILogger<>));
-            container.AsDependency().Bind<SqlRepository, SqlRepository>();
+            container.AsDependency().BindSelf<SqlRepository>();
             
-            container.AsSingleton().Named("MySQL").BindMethod(s => new MySqlConnection("server=localhost;port=3306;user id=root; password=T=j9!:u5GR3C; database=world"), typeof(IDbConnection));
-            container.AsDependency().Named("MySQL").BindMethod(s => s.Resolve<SqlRepository>(("connection", s.Resolve<IDbConnection>("MySQL"))), typeof(IRepository));
+            container.AsDependency().Named("MySQL").BindMethod<IDbConnection>(s => new MySqlConnection("server=localhost;port=3306;user id=root; password=T=j9!:u5GR3C; database=world"));
+            container.AsDependency().Named("MySQL").BindMethod<IRepository>(s => s.Resolve<SqlRepository>(("connection", s.Resolve<IDbConnection>("MySQL"))));
 
             return Task.FromResult(container.Build());
         }
