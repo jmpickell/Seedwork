@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Seedwork.Repositories
 {
+    [ExcludeFromCodeCoverage]
     public class Row
     {
         readonly IReadOnlyDictionary<string, object> _data;

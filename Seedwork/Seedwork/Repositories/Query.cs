@@ -1,5 +1,8 @@
-﻿namespace Seedwork.Repositories
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Seedwork.Repositories
 {
+    [ExcludeFromCodeCoverage]
     public class Query<T>
     {
         public T Key { get; set; }

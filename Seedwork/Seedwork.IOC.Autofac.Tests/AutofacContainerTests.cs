@@ -1,8 +1,10 @@
-﻿using Seedwork.IOC.Autofac.Tests.Mock;
+﻿using Microsoft.Data.SqlClient;
+using Seedwork.IOC.Autofac.Tests.Mock;
 using Seedwork.Utilities;
 
 namespace Seedwork.IOC.Autofac.Tests
 {
+    [DoNotParallelize]
     [TestClass]
     public sealed class AutofacContainerTests
     {
@@ -38,7 +40,7 @@ namespace Seedwork.IOC.Autofac.Tests
             Assert.AreSame(r1, r2);
         }
 
-        //[TestMethod]
+        //[TestMethod] --TODO: Fix to use http scope to properly test
         public void Bind_AsRequest_TwoInstancesSameDifferentThreadNot()
         {
             _sut.AsRequest().Bind<TestClass1, ITestClass>();

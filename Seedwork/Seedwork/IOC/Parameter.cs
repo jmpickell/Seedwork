@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Seedwork.IOC
 {
+    [ExcludeFromCodeCoverage]
     public class IocParameter
     {
         public string Name { get; set; }

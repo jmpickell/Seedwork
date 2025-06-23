@@ -12,6 +12,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace Seedwork.IOC.Ninject.Tests
 {
+    [DoNotParallelize]
     [TestClass]
     public class NinjectContainerTests
     {

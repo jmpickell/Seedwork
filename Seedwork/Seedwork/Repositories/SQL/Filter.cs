@@ -15,4 +15,14 @@ namespace Seedwork.Repositories.SQL
         public object Value { get; }
         public Operation Operation { get; }
     }
+
+    public enum Operation
+    {
+        Equals,
+        NotEquals,
+        GreaterThan,
+        LessThan,
+        GreaterThanEquals,
+        LessThanEquals
+    }
 }

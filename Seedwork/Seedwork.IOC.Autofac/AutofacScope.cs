@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Seedwork.IOC.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Seedwork.IOC.Autofac
 {
+    [ExcludeFromCodeCoverage]
     public class AutofacScope : IIocScope
     {
         private readonly ILifetimeScope _scope;

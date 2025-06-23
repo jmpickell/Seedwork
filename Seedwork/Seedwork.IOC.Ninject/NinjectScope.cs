@@ -2,11 +2,13 @@
 using Seedwork.IOC.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace Seedwork.IOC.Ninject
 {
+    [ExcludeFromCodeCoverage]
     public class NinjectScope : IIocScope
     {
         private readonly IKernel _kernel;
