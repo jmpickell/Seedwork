@@ -22,3 +22,14 @@
 /Seedwork/Seedwork.Tests/bin/Debug/net8.0
 /Seedwork/Seedwork.Tests/obj
 /Seedwork/Seedwork/bin/Debug/netstandard2.0
+/Seedwork/Seedwork/bin/Release/netstandard2.0
+/Seedwork/Seedwork.Console/bin/Release/net8.0
+/Seedwork/Seedwork.IOC.Autofac/bin/Release/netstandard2.0
+/Seedwork/Seedwork.IOC.Autofac.Tests/bin/Release/net8.0
+/Seedwork/Seedwork.IOC.Ninject/bin/Release/netstandard2.0
+/Seedwork/Seedwork.IOC.Ninject/bin/Debug
+/Seedwork/Seedwork.IOC.Ninject.Tests/bin/Release/net8.0
+/Seedwork/Seedwork.Repositories.Aerospike/bin/Release/netstandard2.0
+/Seedwork/Seedwork.Tests/bin/Release/net8.0
+*.exe
+*.nupkg

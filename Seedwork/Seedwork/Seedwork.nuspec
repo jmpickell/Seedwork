@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Seedwork.Base</id>
+    <version>$version$</version>
+    <authors>Jared Pickell</authors>
+    <owners/>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Repository that contains standardized implementations for design patterns which allows for seemless switching between dependencies.</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2025</copyright>
+    <tags>Seedwork</tags>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/jmpickell/Seedwork</projectUrl>
+    <readme>docs\README.md</readme>
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+        <dependency id="Microsoft.Data.SqlClient" version="5.2.2" />
+        <dependency id="Microsoft.Extensions.Logging" version="9.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+	  <file src="Seedwork.dll" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.dll" target="lib\netstandard2.0\!Release"/>
+	  <file src="Seedwork.dll" target="lib\netstandard2.0\!Debug" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.pdb" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.pdb" target="lib\netstandard2.0\!Release" />
+
+    <file src="..\..\..\..\..\README.md" target="docs" />
+	  <file src="Seedwork.dll" target="lib\netstandard2.0" />
+	  <file src="Seedwork.pdb" target="lib\netstandard2.0" />
+  </files>
+</package>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Seedwork.IOC.Autofac.Tests.Mock;
 using Seedwork.Utilities;
+using System;
+using System.Threading.Tasks;
 
 namespace Seedwork.IOC.Autofac.Tests
 {

@@ -1,0 +1,3 @@
+nuget.exe pack Seedwork/bin/Debug/netstandard2.0/Seedwork.nuspec -version VERSION
+nuget.exe pack Seedwork.IOC.Ninject/bin/Debug/netstandard2.0/Seedwork.IOC.Ninject.nuspec -version VERSION
+nuget.exe pack Seedwork.IOC.Autofac/bin/Debug/netstandard2.0/Seedwork.IOC.Autofac.nuspec -version VERSION

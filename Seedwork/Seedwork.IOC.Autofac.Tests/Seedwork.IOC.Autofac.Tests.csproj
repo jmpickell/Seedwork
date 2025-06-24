@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
     <EnableMSTestRunner>true</EnableMSTestRunner>
     <OutputType>Exe</OutputType>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>

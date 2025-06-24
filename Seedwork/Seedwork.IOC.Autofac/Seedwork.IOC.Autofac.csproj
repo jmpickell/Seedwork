@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +12,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Seedwork\Seedwork.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Seedwork.IOC.Autofac.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Dapper;
 
 namespace Seedwork.Repositories.SQL
 {
