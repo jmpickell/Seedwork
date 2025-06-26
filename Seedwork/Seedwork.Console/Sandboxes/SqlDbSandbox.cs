@@ -1,6 +1,9 @@
 ﻿using Seedwork.IOC.Interfaces;
 using Seedwork.Repositories;
 using Seedwork.Repositories.Interfaces;
+using Seedwork.Repositories.SQL;
+using Seedwork.Utilities.Specification;
+using Seedwork.Utilities.Specification.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +15,32 @@ namespace Seedwork.Console.Sandboxes
 {
     public class SqlDbSandbox
     {
-        public static Task Run(IIocScope scope, string db)
+        public async static Task Run(IIocScope scope, string db)
+        {
+            await RunFilter(scope, db);
+        }
+
+
+        public static Task RunFilter(IIocScope scope, string db)
+        {
+            var apple = (Filter.Check("Banana").Equals(1) & Filter.Check("Apple").Equals(2)) | Filter.Check("Orange").Equals(3);
+
+            var row = new Row(new Dictionary<string, object>
+            {
+                { "Banana", 2 },
+                { "Apple", 2 },
+                { "Orange", 3 }
+            });
+
+            apple.IsSatisfied(row);
+
+            return Task.CompletedTask;
+        }
+
+
+
+
+        public static Task RunPrimary(IIocScope scope, string db)
         {
             var repository = scope.Resolve<IRepository>(db);
 

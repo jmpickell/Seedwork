@@ -1,4 +1,3 @@
-nuget packages creation and release
 Do work for filters
 	SQL
 	Aerospike
@@ -7,8 +6,8 @@ Add way to get primary key if column not provided
 Unit Test
 Messaging (Publisher and Consumers)
 	RabbitMQ
-	IBM MQ
 	Kafka
+	IBM MQ
 
 ...
 VariousSettings

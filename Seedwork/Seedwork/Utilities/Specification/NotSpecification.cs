@@ -7,16 +7,16 @@ using System.Text;
 namespace Seedwork.Utilities.Specification
 {
 
-    public class NotSpecification<T> : Specification<T>
+    public class NotSpecification<T> : Specification<T>, IUnitarySpecification<T>
     {
-        private readonly Specification<T> _specification;
+        public ISpecification<T> Base { get; }
         public NotSpecification(Specification<T> specification)
         {
-            _specification = specification;
+            Base = specification;
         }
         public override bool IsSatisfied(T item)
         {
-            return !_specification.IsSatisfied(item);
+            return !Base.IsSatisfied(item);
         }
     }
 }

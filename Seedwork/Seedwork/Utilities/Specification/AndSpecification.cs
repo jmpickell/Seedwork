@@ -2,18 +2,18 @@
 
 namespace Seedwork.Utilities.Specification
 {
-    public class AndSpecification<T> : Specification<T>
+    public class AndSpecification<T> : Specification<T>, ICompositeSpecification<T>
     {
-        private readonly Specification<T> _leftSpecification;
-        private readonly Specification<T> _rightSpecification;
+        public ISpecification<T> Left { get; }
+        public ISpecification<T> Right { get; }
         public AndSpecification(Specification<T> leftSpecification, Specification<T> rightSpecification)
         {
-            _leftSpecification = leftSpecification;
-            _rightSpecification = rightSpecification;
+            Left = leftSpecification;
+            Right = rightSpecification;
         }
         public override bool IsSatisfied(T item)
         {
-            return _leftSpecification.IsSatisfied(item) && _rightSpecification.IsSatisfied(item);
+            return Left.IsSatisfied(item) && Right.IsSatisfied(item);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Seedwork.Repositories.Interfaces;
+using Seedwork.Utilities.Specification.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -114,37 +115,50 @@ namespace Seedwork.Repositories.SQL
             }
         }
 
-        // TODO make work
-        public IEnumerable<Row> Read(Query<Filter> query, params string[] columns)
-        {
-            using (var connection = _connectionFactory()) 
-            using (var command = connection.CreateCommand())
-            {
-                //Build Command
-                var sb = new StringBuilder();
-                sb.Append("SELECT @columns FROM @table");
-                if (query.Key != null)
-                {
-                    sb.Append(" WHERE ");
-                    //sb.Append();
-                }
-                command.CommandText = sb.ToString();
-                command.AddParameter("@columns", columns.AsSql());
-                command.AddParameter("@table", query.Namespace + "." + query.Table);
+        //public IEnumerable<Row> Read(Query<Specification<Row>> query, params string[] columns)
+        //{
+        //    if (!query.IsValidSqlField())
+        //        return false;
 
-                //Execute Query
-                connection.Open();
-                using (IDataReader reader = command.ExecuteReader())
-                while (reader.Read())
-                    yield return new Row(reader.ToDictionary());
-                connection.Close();
-            }
-        }
+        //    using (var connection = _connectionFactory())
+        //    using (var command = connection.CreateCommand())
+        //    {
 
-        public bool Update(Query<Filter> query, Row row)
-        {
-            throw new NotImplementedException();
-        }
+        //    }
+
+        //}
+
+        //// TODO make work
+        //public IEnumerable<Row> Read(Query<Filter> query, params string[] columns)
+        //{
+        //    using (var connection = _connectionFactory()) 
+        //    using (var command = connection.CreateCommand())
+        //    {
+        //        //Build Command
+        //        var sb = new StringBuilder();
+        //        sb.Append("SELECT @columns FROM @table");
+        //        if (query.Key != null)
+        //        {
+        //            sb.Append(" WHERE ");
+        //            //sb.Append();
+        //        }
+        //        command.CommandText = sb.ToString();
+        //        command.AddParameter("@columns", columns.AsSql());
+        //        command.AddParameter("@table", query.Namespace + "." + query.Table);
+
+        //        //Execute Query
+        //        connection.Open();
+        //        using (IDataReader reader = command.ExecuteReader())
+        //        while (reader.Read())
+        //            yield return new Row(reader.ToDictionary());
+        //        connection.Close();
+        //    }
+        //}
+
+        //public bool Update(Query<Filter> query, Row row)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private string GetPrimaryKeyColumn() 
         {

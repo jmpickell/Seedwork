@@ -1,5 +1,16 @@
 ﻿namespace Seedwork.Utilities.Specification.Interfaces
 {
+    public interface ICompositeSpecification<T> : ISpecification<T>
+    {
+        ISpecification<T> Left { get; }
+        ISpecification<T> Right { get; }
+    }
+
+    public interface IUnitarySpecification<T> : ISpecification<T>
+    {
+        ISpecification<T> Base { get; }
+    }
+
     public interface ISpecification<T>
     {
         bool IsSatisfied(T item);
