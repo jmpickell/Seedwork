@@ -3,6 +3,7 @@ using Seedwork.Repositories.SQL;
 using Seedwork.Utilities.Specification;
 using Seedwork.Utilities.Specification.Interfaces;
 using System;
+using System.ComponentModel;
 
 namespace Seedwork.Repositories
 {
@@ -52,7 +53,7 @@ namespace Seedwork.Repositories
 
         private Filter Build(Operation operation, object value)
         {
-            Operation = Operation.Equals;
+            Operation = operation;
             Value = value;
             return this;
         }
@@ -70,11 +71,17 @@ namespace Seedwork.Repositories
 
     public enum Operation
     {
+        [Description("=")]
         Equals,
+        [Description("<>")]
         NotEquals,
+        [Description(">")]
         GreaterThan,
+        [Description("<")]
         LessThan,
+        [Description(">=")]
         GreaterThanEquals,
+        [Description("<=")]
         LessThanEquals
     }
 

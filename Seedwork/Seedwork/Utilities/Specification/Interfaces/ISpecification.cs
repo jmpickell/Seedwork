@@ -1,5 +1,6 @@
 ﻿namespace Seedwork.Utilities.Specification.Interfaces
 {
+
     public interface ICompositeSpecification<T> : ISpecification<T>
     {
         ISpecification<T> Left { get; }

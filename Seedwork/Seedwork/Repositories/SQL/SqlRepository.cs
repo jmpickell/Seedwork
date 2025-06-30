@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Identity.Client;
 using Seedwork.Repositories.Interfaces;
+using Seedwork.Utilities.Specification;
 using Seedwork.Utilities.Specification.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -115,45 +118,28 @@ namespace Seedwork.Repositories.SQL
             }
         }
 
-        //public IEnumerable<Row> Read(Query<Specification<Row>> query, params string[] columns)
-        //{
-        //    if (!query.IsValidSqlField())
-        //        return false;
+        public IEnumerable<Row> Read(Query<ISpecification<Row>> query, params string[] columns)
+        {
+            if (!query.IsValidSqlField() || !columns.IsValidSqlField())
+                yield break;
 
-        //    using (var connection = _connectionFactory())
-        //    using (var command = connection.CreateCommand())
-        //    {
+            using (var connection = _connectionFactory())
+            using (var command = connection.CreateCommand())
+            {
+                IList<Filter> filters = new List<Filter>();
+                command.CommandText = $"SELECT {columns.AsSql()} FROM {query.BuildTableName()} WHERE {BuildFilterQuery(query.Key, ref filters)}";
+                for(int i = 0; i < filters.Count; i++)
+                    command.AddParameter($"@{filters[i].Column}{i}", filters[i].Value);
 
-        //    }
-
-        //}
+                connection.Open();
+                using (IDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
+                        yield return new Row(reader.ToDictionary());
+                connection.Close();
+            }
+        }
 
         //// TODO make work
-        //public IEnumerable<Row> Read(Query<Filter> query, params string[] columns)
-        //{
-        //    using (var connection = _connectionFactory()) 
-        //    using (var command = connection.CreateCommand())
-        //    {
-        //        //Build Command
-        //        var sb = new StringBuilder();
-        //        sb.Append("SELECT @columns FROM @table");
-        //        if (query.Key != null)
-        //        {
-        //            sb.Append(" WHERE ");
-        //            //sb.Append();
-        //        }
-        //        command.CommandText = sb.ToString();
-        //        command.AddParameter("@columns", columns.AsSql());
-        //        command.AddParameter("@table", query.Namespace + "." + query.Table);
-
-        //        //Execute Query
-        //        connection.Open();
-        //        using (IDataReader reader = command.ExecuteReader())
-        //        while (reader.Read())
-        //            yield return new Row(reader.ToDictionary());
-        //        connection.Close();
-        //    }
-        //}
 
         //public bool Update(Query<Filter> query, Row row)
         //{
@@ -163,6 +149,36 @@ namespace Seedwork.Repositories.SQL
         private string GetPrimaryKeyColumn() 
         {
             throw new NotImplementedException();
+        }
+
+        private string BuildFilterQuery(ISpecification<Row> query, ref IList<Filter> filters)
+        {
+            var sb = new StringBuilder();
+            if (query is ICompositeSpecification<Row> composite)
+            {
+                sb.Append('(');
+                sb.Append(BuildFilterQuery(composite.Left, ref filters));
+                sb.Append(
+                    composite is AndSpecification<Row> ? " AND " :
+                    composite is OrSpecification<Row> ? " OR " :
+                    throw new ArgumentException("Unknown Specification!"));
+                sb.Append(BuildFilterQuery(composite.Right, ref filters));
+                sb.Append(')');
+                return sb.ToString();
+            }
+            else if (query is NotSpecification<Row> unitary)
+            {
+                sb.Append(" NOT  (");
+                sb.Append(BuildFilterQuery(unitary.Base, ref filters));
+                sb.Append(')');
+                return sb.ToString();
+            }
+            else if (query is Filter filter)
+            {
+                filters.Add(filter);
+                return $"{filter.Column} {filter.Operation.GetDescription()} @{filter.Column}{filters.Count-1}";
+            }
+            throw new ArgumentException("Unknown Specification!");
         }
     }
 }

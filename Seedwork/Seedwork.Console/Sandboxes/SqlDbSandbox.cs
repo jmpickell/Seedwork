@@ -13,7 +13,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace Seedwork.Console.Sandboxes
 {
-    public class SqlDbSandbox
+    public class DbSandbox
     {
         public async static Task Run(IIocScope scope, string db)
         {
@@ -23,17 +23,26 @@ namespace Seedwork.Console.Sandboxes
 
         public static Task RunFilter(IIocScope scope, string db)
         {
-            var apple = (Filter.Check("Banana").Equals(1) & Filter.Check("Apple").Equals(2)) | Filter.Check("Orange").Equals(3);
+            var repository = scope.Resolve<IRepository>(db);
 
-            var row = new Row(new Dictionary<string, object>
+            var key =
+                Filter.Check("LifeExpectancy").GreaterThan(70) & 
+                (Filter.Check("GNP").GreaterThan(10000) & Filter.Check("GNP").LessThan(30000)) &
+                Filter.Check("Continent").Equals("Europe");
+
+            var query = new Query<ISpecification<Row>> { Table = "country", Key = key  };
+
+            var result = repository.Read(query).ToArray();
+
+            for(int i = 0; i < result.Length; i++)
             {
-                { "Banana", 2 },
-                { "Apple", 2 },
-                { "Orange", 3 }
-            });
-
-            apple.IsSatisfied(row);
-
+                var row = result[i];
+                System.Console.Write($"({row.Get("Name")}, {row.Get("Continent")}):");
+                System.Console.SetCursorPosition(35, i);
+                System.Console.Write($"GNP:${ row.Get("GNP")}");
+                System.Console.SetCursorPosition(55, i);
+                System.Console.WriteLine($"Life Expectancy:{row.Get("LifeExpectancy")}");
+            }
             return Task.CompletedTask;
         }
 

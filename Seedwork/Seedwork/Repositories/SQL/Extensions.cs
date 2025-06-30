@@ -1,6 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Identity.Client;
+using Seedwork.Utilities.Specification;
+using Seedwork.Utilities.Specification.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Seedwork.Repositories.SQL
@@ -28,7 +36,7 @@ namespace Seedwork.Repositories.SQL
             columns.Any() ? string.Join(",", columns.Select(x => $"{prefix}{x}{suffix}")) : "*";
 
         public static bool IsValidSqlField<T>(this Query<T> query) => 
-            (query.Namespace.IsNullOrEmpty() || query.Namespace.IsValidSqlField()) && query.Table.IsValidSqlField() && query.Column.IsValidSqlField();
+            (query.Namespace.IsNullOrEmpty() || query.Namespace.IsValidSqlField()) && query.Table.IsValidSqlField() && (query.Column.IsNullOrEmpty() || query.Column.IsValidSqlField());
 
         public static bool IsValidSqlField(this IEnumerable<string> strings) =>
             strings.All(s => s.IsValidSqlField());
@@ -44,5 +52,12 @@ namespace Seedwork.Repositories.SQL
 
         public static bool IsNullOrEmpty(this string str) =>
             string.IsNullOrEmpty(str);
+
+        public static string GetDescription<TEnum>(this TEnum EnumValue) where TEnum : struct
+        {
+            var fi = EnumValue.GetType().GetField(EnumValue.ToString());
+            var description = fi.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            return description ?? EnumValue.ToString();
+        }
     } 
 }

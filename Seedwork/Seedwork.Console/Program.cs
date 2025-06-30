@@ -6,6 +6,6 @@ internal class Program
     private static async Task Main(string[] args)
     {
         var scope = await IocContainerBuilder.SetupScope();
-        await SqlDbSandbox.Run(scope, db: "MySQL");        
+        await DbSandbox.Run(scope, db: "MySQL");        
     }
 }

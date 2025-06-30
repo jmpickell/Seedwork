@@ -33,3 +33,4 @@
 /Seedwork/Seedwork.Tests/bin/Release/net8.0
 *.exe
 *.nupkg
+/Seedwork/Seedwork.IOC.Ninject.Tests/bin/Release/net8.0/.msCoverageSourceRootsMapping_Seedwork.IOC.Ninject.Tests
