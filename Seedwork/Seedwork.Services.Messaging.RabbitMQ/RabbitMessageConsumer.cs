@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Seedwork.Services.Messaging.RabbitMQ
+namespace Seedwork.Services.Messaging.RabbitMq
 {
     public class RabbitMessageConsumer<T> : IMessageConsumer<T>
     {
@@ -35,11 +35,8 @@ namespace Seedwork.Services.Messaging.RabbitMQ
             return message;
         }
 
-        public Task Start(Action<Message<T>, CancellationToken> onMessage) =>
-            _task = Task.Factory.StartNew(async () =>
-            {
-                onMessage(await Consume(_source.Token), _source.Token);
-            });
+        public async Task Start(Func<Message<T>, CancellationToken, Task> onMessage) =>
+            _task = onMessage(await Consume(_source.Token), _source.Token);
 
         public async Task Stop()
         {

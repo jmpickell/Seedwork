@@ -13,4 +13,14 @@
     <ProjectReference Include="..\Seedwork\Seedwork.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Seedwork.Services.Messaging.RabbitMq.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
+  </ItemGroup>
+
 </Project>

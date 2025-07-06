@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Seedwork.Services.Messaging.RabbitMQ
+namespace Seedwork.Services.Messaging.RabbitMq
 {
     public class RabbitMessagePublisher<T> : IMessagePublisher<T>
     {

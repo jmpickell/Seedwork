@@ -3,6 +3,7 @@ Messaging (Publisher and Consumers)
 	Kafka
 	IBM MQ
 Find way to test messaging
+	Add settings and things to build publishers/consumers
 Unit Test
 Create way to use ioc framework with classes created
 Add way to get primary key if column not provided

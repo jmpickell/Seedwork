@@ -16,6 +16,7 @@ namespace Seedwork.Services.Messaging.Interfaces
     [ExcludeFromCodeCoverage]
     public class Message<T>
     {
+        public string Id { get; set; }
         public Headers Headers { get; set; }
         public T Payload { get; set; }
     }

@@ -36,3 +36,4 @@
 /Seedwork/Seedwork.IOC.Ninject.Tests/bin/Release/net8.0/.msCoverageSourceRootsMapping_Seedwork.IOC.Ninject.Tests
 /Seedwork/Seedwork.Services.Messaging.RabbitMQ/bin/Debug/netstandard2.0
 /Seedwork/Seedwork.Services.Messaging.RabbitMQ/obj
+/Seedwork/Seedwork.Services.Messaging.Kafka/obj
