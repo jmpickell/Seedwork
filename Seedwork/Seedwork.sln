@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kafka", "Kafka", "{BBE6075D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seedwork.Services.Messaging.Kafka", "Seedwork.Services.Messaging.Kafka\Seedwork.Services.Messaging.Kafka.csproj", "{44FBB401-16C5-48A7-9285-C861AF42A8C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seedwork.Services.Messaging.IbmMq", "Seedwork.Services.Messaging.IbmMq\Seedwork.Services.Messaging.IbmMq.csproj", "{07EBD883-ADE8-4367-B106-44814B904CDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{44FBB401-16C5-48A7-9285-C861AF42A8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44FBB401-16C5-48A7-9285-C861AF42A8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44FBB401-16C5-48A7-9285-C861AF42A8C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07EBD883-ADE8-4367-B106-44814B904CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07EBD883-ADE8-4367-B106-44814B904CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07EBD883-ADE8-4367-B106-44814B904CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07EBD883-ADE8-4367-B106-44814B904CDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,6 +124,7 @@ Global
 		{D9B06C7E-D113-496F-81A2-273B62D744C7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BBE6075D-F226-4420-81B5-85DE150C6ECB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{44FBB401-16C5-48A7-9285-C861AF42A8C1} = {BBE6075D-F226-4420-81B5-85DE150C6ECB}
+		{07EBD883-ADE8-4367-B106-44814B904CDE} = {D9B06C7E-D113-496F-81A2-273B62D744C7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9CD38AA4-054B-435E-BF03-F859BE818004}

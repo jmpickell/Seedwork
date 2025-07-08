@@ -21,14 +21,14 @@
     </dependencies>
   </metadata>
   <files>
-	  <file src="Seedwork.Services.Messaging.Kafka.dll" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
-	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.Kafka.dll" target="lib\netstandard2.0\!Release"/>
-	  <file src="Seedwork.Services.Messaging.Kafka.dll" target="lib\netstandard2.0\!Debug" />
-	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.Kafka.pdb" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
-	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.Kafka.pdb" target="lib\netstandard2.0\!Release" />
+	  <file src="Seedwork.Services.Messaging.IbmMq.dll" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.IbmMq.dll" target="lib\netstandard2.0\!Release"/>
+	  <file src="Seedwork.Services.Messaging.IbmMq.dll" target="lib\netstandard2.0\!Debug" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.IbmMq.pdb" target="lib\netstandard2.0\$(Exclaim)$(Configuration)" />
+	  <file src="..\..\Release\netstandard2.0\Seedwork.Services.Messaging.IbmMq.pdb" target="lib\netstandard2.0\!Release" />
 
     <file src="..\..\..\..\..\README.md" target="docs" />
-	  <file src="Seedwork.Services.Messaging.Kafka.dll" target="lib\netstandard2.0" />
-	  <file src="Seedwork.Services.Messaging.Kafka.pdb" target="lib\netstandard2.0" />
+	  <file src="Seedwork.Services.Messaging.IbmMq.dll" target="lib\netstandard2.0" />
+	  <file src="Seedwork.Services.Messaging.IbmMq.pdb" target="lib\netstandard2.0" />
   </files>
 </package>

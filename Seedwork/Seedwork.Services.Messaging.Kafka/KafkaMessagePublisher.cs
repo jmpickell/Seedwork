@@ -14,13 +14,13 @@ namespace Seedwork.Services.Messaging.Kafka
     {
         private readonly KafkaPublisherSettings _settings;
         private readonly IProducer<string, T> _producer;
-        private readonly IAdapter<object, byte[]> _adapter;
+        private readonly IAdapter<object, byte[]> _hAdapter;
 
-        public KafkaMessagePublisher(KafkaPublisherSettings settings, IProducer<string, T> producer, IAdapter<object, byte[]> adapter)
+        public KafkaMessagePublisher(KafkaPublisherSettings settings, IProducer<string, T> producer, IAdapter<object, byte[]> hAdapter)
         {
             _settings = settings;
             _producer = producer;
-            _adapter = adapter;
+            _hAdapter = hAdapter;
         }
 
         public async Task<bool> Publish(Message<T> message, CancellationToken token = default)
@@ -34,7 +34,7 @@ namespace Seedwork.Services.Messaging.Kafka
             
             kMessage.Headers = new Confluent.Kafka.Headers();
             foreach (var header in message.Headers.GetAll())
-                kMessage.Headers.Add(new Header(header.Key, _adapter.Convert(header.Value)));
+                kMessage.Headers.Add(new Header(header.Key, _hAdapter.Convert(header.Value)));
 
             var result = await _producer.ProduceAsync(_settings.Topic, kMessage, token);
 

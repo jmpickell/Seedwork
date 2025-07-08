@@ -36,7 +36,7 @@ namespace Seedwork.Services.Messaging.RabbitMq
         }
 
         public async Task Start(Func<Message<T>, CancellationToken, Task> onMessage) =>
-            _task = onMessage(await Consume(_source.Token), _source.Token);
+            _task = Task.Run(async () => { while (!_source.IsCancellationRequested) await onMessage(await Consume(_source.Token), _source.Token); });
 
         public async Task Stop()
         {

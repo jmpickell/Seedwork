@@ -12,13 +12,13 @@ namespace Seedwork.Services.Messaging.RabbitMq
     public class RabbitMessagePublisher<T> : IMessagePublisher<T>
     {
         private readonly IChannel _channel;
-        private readonly IAdapter<T, byte[]> _adapter;
+        private readonly IAdapter<T, byte[]> _mAdapter;
         private readonly string _queue;
 
-        public RabbitMessagePublisher(IConnection connection, IAdapter<T, byte[]> adapter, string queue)
+        public RabbitMessagePublisher(IConnection connection, IAdapter<T, byte[]> mAdapter, string queue)
         {
             _channel = connection.CreateChannelAsync().Result;        
-            _adapter = adapter;
+            _mAdapter = mAdapter;
             _queue = queue;
         }
 
@@ -27,7 +27,7 @@ namespace Seedwork.Services.Messaging.RabbitMq
             BasicProperties properties = new BasicProperties();
             properties.Headers = message.Headers.GetAll();
 
-            await _channel.BasicPublishAsync(string.Empty, _queue, false, properties, _adapter.Convert(message.Payload), token);
+            await _channel.BasicPublishAsync(string.Empty, _queue, false, properties, _mAdapter.Convert(message.Payload), token);
             return true;
         }
     }

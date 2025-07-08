@@ -36,7 +36,7 @@ namespace Seedwork.Services.Messaging.Kafka
         }
 
         public async Task Start(Func<Message<T>, CancellationToken, Task> OnMessage) =>
-            _task = OnMessage(await Consume(_source.Token), _source.Token);
+            _task = Task.Run(async () => { while (!_source.IsCancellationRequested) await OnMessage(await Consume(_source.Token), _source.Token); });
 
 
         public async Task Stop()

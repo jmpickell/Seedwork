@@ -1,11 +1,14 @@
-
-Messaging (Publisher and Consumers)
-	Kafka
-	IBM MQ
+cleaner way to write line where we call onmessage
 Find way to test messaging
 	Add settings and things to build publishers/consumers
+add stuff for avro for kafka
 Unit Test
 Create way to use ioc framework with classes created
+combine settings for similar things but allow for configuratoins for specific things to be allowed
+add ability to use either bytes or string for messaging
+	ibm mq
+	kafka?
+
 Add way to get primary key if column not provided
 Unit Test
 Find way to test aerospike stuff
