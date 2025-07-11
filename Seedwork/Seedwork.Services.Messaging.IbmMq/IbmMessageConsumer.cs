@@ -2,6 +2,7 @@
 using Seedwork.Services.Messaging.IbmMq.Settings;
 using Seedwork.Services.Messaging.IbmMq.Utilities;
 using Seedwork.Services.Messaging.Interfaces;
+using Seedwork.Utilities;
 using Seedwork.Utilities.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -28,39 +29,32 @@ namespace Seedwork.Services.Messaging.Kafka
             _session = connection.CreateSession(_settings.Transacted, _settings.AcknowledgeMode);
             var destination = _session.Create(_settings.Destination.name, _settings.Destination.type);
             _consumer = _session.CreateConsumer(destination);
-            
+
         }
 
-        public async Task<Message<T>> Consume(CancellationToken token)
+        public Message<T> Consume(CancellationToken token)
         {
-            while(!token.IsCancellationRequested)
-            {
-                var result = _consumer.ReceiveNoWait();
-                if (result == null)
-                {
-                    await Task.Delay(10);
-                    continue;
-                }
+            var result = _consumer.ReceiveNoWait();
+            if (result == null)
+                return null;
 
-                var msg = (IBytesMessage)result;
-                var message = new Message<T>();
-                message.Id = msg.JMSMessageID;
-                byte[] buffer = new byte[msg.BodyLength];
-                msg.ReadBytes(buffer);
-                message.Payload = _mAdapter.Convert(buffer);
-                return message;
-            }
-            return null;
+            var msg = (IBytesMessage)result;
+            var message = new Message<T>();
+            message.Id = msg.JMSMessageID;
+            byte[] buffer = new byte[msg.BodyLength];
+            msg.ReadBytes(buffer);
+            message.Payload = _mAdapter.Convert(buffer);
+            return message;
         }
 
-        public async Task Start(Func<Message<T>, CancellationToken, Task> OnMessage) =>
-            _task = Task.Run(async () => { while (!_source.IsCancellationRequested) await OnMessage(await Consume(_source.Token), _source.Token); });
+        public Task Start(Func<Message<T>, CancellationToken, Task> OnMessage) =>
+            _task = _source.WhileNotCanceled(() => OnMessage(Consume(_source.Token), _source.Token));
 
 
         public async Task Stop()
         {
             _source.Cancel();
-            if(_task != null)
+            if (_task != null)
                 await _task;
             _consumer.Dispose();
         }

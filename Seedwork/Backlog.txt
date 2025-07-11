@@ -1,4 +1,3 @@
-cleaner way to write line where we call onmessage
 Find way to test messaging
 	Add settings and things to build publishers/consumers
 add stuff for avro for kafka

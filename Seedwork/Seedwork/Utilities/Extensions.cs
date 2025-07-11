@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Seedwork.Utilities
 {
@@ -9,7 +11,7 @@ namespace Seedwork.Utilities
     {
         public static T To<T>(this object o) => (T)o;
 
-        public static T Convert<T>(this object o) => 
+        public static T Convert<T>(this object o) =>
             (T)System.Convert.ChangeType(o, typeof(T));
 
         public static U Then<T, U>(this T t, Func<T, U> func) =>
@@ -20,5 +22,11 @@ namespace Seedwork.Utilities
 
         public static void Lastly<T>(this T t, Action<T> func) =>
             func.Invoke(t);
+
+        public static async Task WhileNotCanceled(this CancellationTokenSource source, Func<Task> func)
+        {
+            while (!source.IsCancellationRequested)
+                await func();
+        }
     }
 }
